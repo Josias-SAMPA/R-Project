@@ -30,53 +30,50 @@ if(n>=30){
   
   seuil_signifi<-0.01
   
-  resultat<-1-(seuil_signifi)/2
+  resultat<-1-seuil_signifi
   
   z_<-round(qnorm(resultat),2)
   
   cat("\n")
   cat(z_)
   cat("\n")
-  borne_inf<- -z_
   borne_sup<-  z_
   
   cat("\n")
-  cat(paste("Zone de non rejet de H0 est :[-Inf ;",borne_sup,"] \n"))
+  cat(paste("ZNRH0 = ] -Inf ;",borne_sup,"] \n"))
   
   #prise de decision et conclusion
   
   #prise de decision
   
   cat("\n")
-  if(z_obs>=borne_inf & z_obs<=borne_sup){
-    cat(paste(z_obs,"appartient inclus a [ -Inf ;",borne_sup,"] \n"))
+  if(z_obs>borne_sup){
+    cat(paste(z_obs,"appartient inclus a ]-Inf ;",borne_sup,"] \n"))
     cat("\n")
     cat(paste("Ho est accepte \n"))
   }else{
-    cat(paste(z_obs,"appartient non inclus dans [-Inf ;",borne_sup,"] \n"))
+    cat(paste(z_obs,"n'appartient pas a  ]-Inf;",borne_sup,"]\n"))
     cat("\n")
     cat(paste("Donc H0 est rejette et H1 est accepte \n"))
     cat("\n")
     cat(paste("Conclusion \n"))
     cat("\n")
-    cat(paste("Au risque de se tromper  de ",seuil_signifi*100,"% la note moyenne des etudiants est superieur a  10,5\n"))
+    cat(paste("Au risque de se tromper  de ", seuil_signifi*100 ,"% la note moyenne des etudiants est superieur a  10,5\n"))
     
     x_val<-seq(-4,4,length=1000)
     y_val<-dnorm(x_val)
     
     plot(x_val,y_val,type="l",lwd=2,col="blue",main="Loi Normale - Test unilateral",xlab="Z",ylab="Densite")
     
-    x_left<-seq(-4,borne_inf,length=200)
-    polygon(c(-4, x_left,borne_inf),c(0,dnorm(x_left),0),col="red",border = NA)
+    x_right<-seq(borne_sup,4,length=200)
+    polygon(c(borne_sup,x_right,4),c(0,dnorm(x_right),0),col="red",border = NA)
     
-    x_right<-seq(borne_sup,4,length=500)
-    polygon(c(borne_sup,x_right,4),c(0,dnorm(x_right),0),col="lightgreen",border = NA)
+    x_mid<-seq(-4,borne_sup,length=500)
+    polygon(c(-4,x_mid,borne_sup),c(0,dnorm(x_mid),0),col="lightgreen",border = NA)
     
     
-    
+    abline(v=borne_sup,col="darkred",lwd=2,lty=2)
     abline(v=z_obs,col="purple",lwd=2,lty=2)
-    
-    abline(v=borne_inf,col="darkred",lwd=2,lty=2)
     
     
   }
