@@ -6,12 +6,15 @@ saisirNombre <- function(message) {
 test_Bartlett <- function() {
   
   # Nombre de groupes
-  k <- saisirNombre("Entrez le nombre de groupes : ")
+  K <- saisirNombre("Entrez le nombre de groupes : ")
   
   groupes <- list()
   
+  ni<-c()
+  s2_i<-c()
+  
   # Saisie des groupes
-  for (i in 1:k) {
+  for (i in 1:K) {
     
     cat(" Groupe", i, "\n")
     
@@ -25,35 +28,47 @@ test_Bartlett <- function() {
     }
     
     groupes[[i]] <- valeurs
+    
+    ni[i]<-length(valeurs)
+    s2_i[i]<-var(valeurs)
+    
   }
+    cat("la variance des groupes est  = ",s2_i)
+    
+    N<-sum(ni)
+    
+    cat("Effectif total = ",N,"\n")
+    
+    sp2<- sum((ni-1)*s2_i)/(N-K)
+    
+    express_numerateur<-(N-K)*log(sp2)-sum((ni-1)*log(s2_i))
+    
+    express_denominateur<- 1 + (1 / (3 * (k - 1))) * (sum(1 / (ni - 1)) - 1 / (N - k))
   
-  #  Test de Bartlett 
-  test <- bartlett.test(groupes)
+    
+    B_test<-express_numerateur/express_denominateur
+    
+    cat("la valeur de test  = ",B_test,"\n")
+    
+    #calcul de la valeur critique
+    alpha<-saisirNombre("Entrez votre de signification(0.05) : \n")
+    
+    ddl<-K-1
+    
+    Bk_alpha<-qchisq(1-alpha,ddl )
+    
+    B_crit<-(1/N)*sum(ni*Bk_alpha)
+    
+    cat("La valeur critique est ",B_crit,"\n")
+    
+    #Prise de decision
+    if(B_test > B_crit){
+      cat("on rejette L'hypothese nulle H0")
+    }else{
+      cat("on accepte L'hypothese alternative H1")
+    }
+    
   
-  # valeur de test
-  stat <- test$statistic
-  
-  # ddl
-  ddl <- test$parameter
-  
-  
-  alpha <- 0.05
-  
-  
-  valeur_critique <- qchisq(1 - alpha, df = ddl)
-  
-  
-  cat("Résultats du test de Bartlett")
-  cat("Valeur de test :", stat, "\n")
-  cat("Degrés de liberté :", ddl, "\n")
-  cat("Valeur critique  :", valeur_critique, "\n")
-  
-  
-  cat("Prise de Décision \n")
-  
-  if (stat > valeur_critique) {
-    cat("On rejette H0 , variances différentes \n")
-  } else {
-    cat("On accepte H1 ,  variances homogènes \n")
-  }
 }
+
+test_Bartlett()
